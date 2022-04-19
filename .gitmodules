@@ -1,0 +1,3 @@
+[submodule "GraphDTA"]
+	path = GraphDTA
+	url = git@github.com:thinng/GraphDTA.git
