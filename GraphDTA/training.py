@@ -4,11 +4,12 @@ import sys, os
 from random import shuffle
 import torch
 import torch.nn as nn
-from GraphDTA.models.gat import GATNet
-from GraphDTA.models.gat_gcn import GAT_GCN
-from GraphDTA.models.gcn import GCNNet
-from GraphDTA.models.ginconv import GINConvNet
-from GraphDTA.utils import *
+from models.gat import GATNet
+from models.gat_gcn import GAT_GCN
+from models.gcn import GCNNet
+from models.ginconv import GINConvNet
+from utils import *
+import torch_geometric
 
 # training function at each epoch
 def train(model, device, train_loader, optimizer, epoch):
@@ -72,8 +73,9 @@ for dataset in datasets:
         test_data = TestbedDataset(root='data', dataset=dataset+'_test')
         
         # make data PyTorch mini-batch processing ready
-        train_loader = DataLoader(train_data, batch_size=TRAIN_BATCH_SIZE, shuffle=True)
-        test_loader = DataLoader(test_data, batch_size=TEST_BATCH_SIZE, shuffle=False)
+        # DataLoader is deprecated; EDITED to torch_geometric.loader.DataLoader
+        train_loader = torch_geometric.loader.DataLoader(train_data, batch_size=TRAIN_BATCH_SIZE, shuffle=True)
+        test_loader = torch_geometric.loader.DataLoader(test_data, batch_size=TEST_BATCH_SIZE, shuffle=False)
 
         # training the model
         device = torch.device(cuda_name if torch.cuda.is_available() else "cpu")

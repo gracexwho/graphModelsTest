@@ -59,10 +59,19 @@ class TestbedDataset(InMemoryDataset):
             labels = y[i]
             # convert SMILES to molecular representation using rdkit
             c_size, features, edge_index = smile_graph[smiles]
+            features = np.array(features)
+            edge_index = np.array(edge_index)
+            ### EDITED
             # make the graph ready for PyTorch Geometrics GCN algorithms:
             GCNData = DATA.Data(x=torch.Tensor(features),
                                 edge_index=torch.LongTensor(edge_index).transpose(1, 0),
                                 y=torch.FloatTensor([labels]))
+
+
+            #### EDITED have to cast to int64 or else you get LongTensor conversion error
+            print("target array type: ", target.dtype)
+            target = np.array(target, dtype=np.int64)
+
             GCNData.target = torch.LongTensor([target])
             GCNData.__setitem__('c_size', torch.LongTensor([c_size]))
             # append graph, label and target sequence to data list
